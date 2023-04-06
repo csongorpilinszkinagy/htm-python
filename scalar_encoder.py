@@ -18,3 +18,7 @@ class ScalarEncoder():
         sdr[0, idx:idx+self.num_active_cells] = 1
         sdr = csr_matrix(sdr)
         return sdr
+
+    def decode(self, sdr: csr_matrix) -> float:
+        idx = sdr.indices[0]
+        return self.bins[max(idx-1, 0)]
