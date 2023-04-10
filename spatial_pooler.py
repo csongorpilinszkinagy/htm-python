@@ -7,6 +7,7 @@ class SpatialPooler():
         potential_synapse_ratio: float = 0.5, active_column_ratio: float = 0.02,
         synapse_min: int = 0, synapse_init: int = 40, synapse_threshold: int = 50, synapse_max:int = 100,
         synapse_inc: int = 2, synapse_dec: int = 1):
+
         self.input_size = input_size
         self.num_columns = num_columns
         self.num_active_columns = int(num_columns * active_column_ratio)
@@ -22,14 +23,6 @@ class SpatialPooler():
 
         self.active_columns = csr_matrix((1, num_columns))
 
-        self.connected_synapses = None
-
-        @property
-        def connected_synapses(self):
-            return self.synapse_strengths >= self.synapse_threshold
-            
-
-
     def _init_synapses(self, input_size: int, num_columns: int, potential_synapse_ratio: float, init_value: int) -> tuple[csr_matrix, csr_matrix]:
         num_potential_synapses = int(input_size * potential_synapse_ratio)
         potential_synapses = lil_matrix((input_size, num_columns))
@@ -44,7 +37,8 @@ class SpatialPooler():
         return potential_synapses, synapse_strengths
     
     def inference(self, input_sdr: csr_matrix) -> csr_matrix:
-        column_activations = input_sdr.dot(self.connected_synapses)
+        connected_synapses = self.synapse_strengths >= self.synapse_threshold
+        column_activations = input_sdr.dot(connected_synapses)
         
         # TODO: add boosting
 
@@ -53,5 +47,20 @@ class SpatialPooler():
         rows = [0] * self.num_active_columns
         active_columns = csr_matrix((values, (rows, top_columns)), shape=(1, self.num_columns))
         
+        return active_columns
+    
+    def train(self, input_sdr: csr_matrix) -> csr_matrix:
+        active_columns = self.inference(input_sdr)
+
+        synapses_to_inc = input_sdr.transpose().dot(active_columns)
+        synapses_to_inc = synapses_to_inc.multiply(self.potential_synapses)
+
+        synapses_to_dec = self.potential_synapses - synapses_to_inc
+        synapses_to_dec = synapses_to_dec.multiply(active_columns)
+
+        self.synapse_strengths += synapses_to_inc * self.synapse_inc
+        self.synapse_strengths -= synapses_to_dec * self.synapse_dec
+        self.synapse_strengths = self.synapse_strengths.maximum(self.synapse_min).minimum(self.synapse_max)
+
         return active_columns
         
