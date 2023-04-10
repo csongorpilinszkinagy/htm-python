@@ -44,7 +44,7 @@ class SpatialPooler():
         return potential_synapses, synapse_strengths
     
     def inference(self, input_sdr: csr_matrix) -> csr_matrix:
-        column_activations = input_sdr.multiply(self.connected_synapses)
+        column_activations = input_sdr.dot(self.connected_synapses)
         
         # TODO: add boosting
 
