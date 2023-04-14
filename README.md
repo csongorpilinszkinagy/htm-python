@@ -22,6 +22,8 @@ Segments are groups of synapses that form a connection between a subset of neuro
 * [Temporal Memory](#temporal-memory)
 * [SDR decoder](#sdr-decoder)
 
+[![](https://mermaid.ink/img/pako:eNpVkM9qwzAMxl_F6NRB-wI5DFacQw-hYQ69xDsYR10DtmUcuaWUvvucZNBNJ-nT90N_HmBpQKjg7OhmLyax2Hc6iBKH0-YQYmZxNS7jm9jt3oWqeyU_RR1mKn2tRlWXnpj1hDHhhIENjxRWou1VLKVxoiVyL6idoQ_L4xWFJZd9mBaga_oOfaRUiAY9pfsv0TV_CXRu9Su5rCTx30py6R1Pm2Pm1w2wBY_Jm3EoFz9mqwa-oEcNVUkDZi5jNejwLFaTmdQ9WKg4ZdxCjoNhlKP5TsZDdTZuKioOI1Nq1i8uz3z-AJwVbRw?type=png)](https://mermaid.live/edit#pako:eNpVkM9qwzAMxl_F6NRB-wI5DFacQw-hYQ69xDsYR10DtmUcuaWUvvucZNBNJ-nT90N_HmBpQKjg7OhmLyax2Hc6iBKH0-YQYmZxNS7jm9jt3oWqeyU_RR1mKn2tRlWXnpj1hDHhhIENjxRWou1VLKVxoiVyL6idoQ_L4xWFJZd9mBaga_oOfaRUiAY9pfsv0TV_CXRu9Su5rCTx30py6R1Pm2Pm1w2wBY_Jm3EoFz9mqwa-oEcNVUkDZi5jNejwLFaTmdQ9WKg4ZdxCjoNhlKP5TsZDdTZuKioOI1Nq1i8uz3z-AJwVbRw)
+
 ### SDR encoder
 
 Key features of an SDR:
