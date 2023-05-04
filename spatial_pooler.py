@@ -9,6 +9,7 @@ class SpatialPooler():
         synapse_inc: int = 2, synapse_dec: int = 1):
 
         self.input_size = input_size
+        assert num_columns >= 100
         self.num_columns = num_columns
         self.num_active_columns = int(num_columns * active_column_ratio)
         
@@ -41,10 +42,9 @@ class SpatialPooler():
         column_activations = input_sdr.dot(connected_synapses)
         
         # TODO: add boosting
-
-        top_columns = np.argsort(column_activations.to_dense())[0][-self.num_active_columns:]
-        values = [1] * self.num_active_columns
-        rows = [0] * self.num_active_columns
+        top_columns = np.argsort(column_activations.toarray())[0, -self.num_active_columns:]
+        values = [1] * len(top_columns)
+        rows = [0] * len(top_columns)
         active_columns = csr_matrix((values, (rows, top_columns)), shape=(1, self.num_columns))
         
         return active_columns

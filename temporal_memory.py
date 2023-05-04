@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.sparse import spmatrix, csr_matrix, coo_matrix
+from scipy.sparse import spmatrix, csr_matrix, csc_matrix, coo_matrix
 
 class TemporalMemory:
     def __init__(self, num_columns: int, num_column_cells: int, max_segment: int,
@@ -41,23 +41,27 @@ class TemporalMemory:
             segment_activations[:, idx] = self.active_cells.dot(synapses)
 
         active_segments = segment_activations >= self.segment_active_threshold # (cells, segments)
-        predictive_cells = active_segments.reduce_or(axis=1) # (1, cells)
-        predictive_active_cells = active_columns.multiply(predictive_cells) # AND operation, # (1, cells)
+        predictive_cells = self._reduce_or(active_segments, axis=1) # (1, cells)
+        
+        predictive_active_cells = csr_matrix((self.num_columns, self.num_column_cells))
+        for i in range(self.num_column_cells):
+            predictive_active_cells[:, i] = active_columns.transpose().multiply(csc_matrix(predictive_cells.reshape(self.num_columns, self.num_column_cells))[:, i]) # AND operation, # (1, cells)
 
-        predictive_columns = predictive_cells.reshape(self.num_columns, self.num_column_cells).reduce_or(axis=1).transpose() # (1, columns)
-        bursting_columns = active_columns - active_columns & predictive_columns # (1, columns)
-        bursting_active_cells = bursting_columns.transpose().repeat(self.num_column_cells, axis=1)
+        predictive_columns = self._reduce_or(predictive_cells.reshape(self.num_columns, self.num_column_cells), axis=1) # (1, columns)
+        bursting_columns = active_columns - active_columns.multiply(predictive_columns) # (1, columns)
 
-        active_cells = predictive_active_cells | bursting_active_cells
-        return active_cells
+        active_cells = csr_matrix((self.num_columns, self.num_column_cells))
+        for i in range(self.num_column_cells):
+            active_cells[:, i] = predictive_active_cells[:, i].maximum(bursting_columns.transpose())
+        return active_cells.reshape((1, self.num_cells))
 
     def _reduce_or(self, matrix: spmatrix, axis: int):
         matrix = coo_matrix(matrix)
         if axis == 0:
             nonzero_indices = np.unique(matrix.col)
-            reduced_vector = coo_matrix(([1]*len(nonzero_indices), ([0]*len(nonzero_indices), nonzero_indices)), shape=(1, sparse_matrix.shape[1]))
+            reduced_vector = coo_matrix(([1]*len(nonzero_indices), ([0]*len(nonzero_indices), nonzero_indices)), shape=(1, matrix.shape[1]))
         elif axis == 1:
             nonzero_indices = np.unique(matrix.row)
-            reduced_vector = coo_matrix(([1]*len(nonzero_indices), ([0]*len(nonzero_indices), nonzero_indices)), shape=(1, sparse_matrix.shape[0]))
-        return reduced_vector
+            reduced_vector = coo_matrix(([1]*len(nonzero_indices), ([0]*len(nonzero_indices), nonzero_indices)), shape=(1, matrix.shape[0]))
+        return csr_matrix(reduced_vector)
         
