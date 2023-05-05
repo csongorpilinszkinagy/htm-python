@@ -7,7 +7,7 @@ class SpatialPooler():
             self,
             input_size: int,
             num_columns: int,
-            potential_synapse_ratio: float = 0.5,
+            potential_synapse_ratio: float = 0.2,
             active_column_ratio: float = 0.02,
             synapse_min: int = 0,
             synapse_threshold: int = 20,
@@ -32,7 +32,7 @@ class SpatialPooler():
             input_size, num_columns, potential_synapse_ratio, synapse_init)
 
         self.active_columns = csr_matrix((1, num_columns))
-        self.column_activity = np.zeros(num_columns)
+        self.column_activity = np.ones(num_columns)
 
     def _init_synapses(self,
                        input_size: int,
@@ -90,5 +90,7 @@ class SpatialPooler():
             self.synapse_strengths -= synapses_to_dec * self.synapse_dec
             self.synapse_strengths = self.synapse_strengths.maximum(
                 self.synapse_min).minimum(self.synapse_max)
+            
+        self.column_activity = self.column_activity * 0.999 + active_columns.toarray()[0, :]
 
         return active_columns
