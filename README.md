@@ -1,11 +1,11 @@
 # Hiearchical Temporal Memory - Python implementation
 
 ### Scalar Encoder (from scalar to SDR)
-- [ ] Implement using dense arrays
+- [x] Implement using dense arrays
 - [ ] Implement using sparse arrays
 
 ### Scalar Decoder (from SDR to scalar)
-- [ ] Implement using dense arrays
+- [x] Implement using dense arrays
 - [ ] Implement using sparse arrays
 
 ### Spatial Pooler
