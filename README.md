@@ -9,7 +9,7 @@
 - [ ] Implement using sparse arrays
 
 ### Spatial Pooler
-- [ ] Implement without boosting
+- [x] Implement without boosting
 - [ ] Implement with boosting
 - [ ] Implement using sparse arrays
 
