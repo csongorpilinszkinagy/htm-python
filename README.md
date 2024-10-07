@@ -1,21 +1,15 @@
 # Hiearchical Temporal Memory - Python implementation
 
-### Scalar Encoder (from scalar to SDR)
-- [x] Implement using dense arrays
-- [ ] Implement using sparse arrays
+### Dense Implementations
+- [x] Category Encoder
+- [x] Scalar Encoder
+- [x] SDR Decoder
+- [x] Spatial Pooler
+- [ ] Temporal Memory
 
-### Scalar Decoder (from SDR to scalar)
-- [x] Implement using dense arrays
-- [ ] Implement using sparse arrays
-
-### Spatial Pooler
-- [x] Implement without boosting
-- [ ] Implement with boosting
-- [ ] Implement using sparse arrays
-
-### Temporal Memory
-- [ ] Implement segments
-- [ ] Implement cell prediction
-- [ ] Implement cell activation and column bursting
-- [ ] Implement segment and synapse growing
-- [ ] Implement using sparse arrays
+### Sparse Implementations
+- [ ] Sparse Category Encoder
+- [ ] Sparse Scalar Encoder
+- [ ] Sparse SDR Decoder
+- [ ] Sparse Spatial Pooler
+- [ ] Sparse Temporal Memory
